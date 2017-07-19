@@ -44,9 +44,9 @@ let min_width =  rows - ( (rows-1)/2);
 //let mut start = rows;
 let mut end = min_width;
 let mut iter = 0; 
-fn render_row(end:i32, ctx: &mut Context, iter:i32, min_width:i32, rows:i32, invert:bool){
+fn render_row(end:i32, ctx: &mut Context, iter:i32, min_width:i32, rows:i32, invert:bool, g){
         
-        let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap();
+        //let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap();
         let w = 136;
         let h = 68;
         let padding_left = 2;
@@ -137,6 +137,7 @@ impl event::EventHandler for MainState {
          let x_plus = self.pos_x + 100.0;
          let y_minus = self.pos_y - 100.0;
          let x_minus = self.pos_x - 100.0;*/
+         let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap();
         graphics::clear(ctx);
         graphics::set_background_color(ctx, 
             //rgba_float(255, 192, 82, 1.0)
