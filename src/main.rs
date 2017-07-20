@@ -1,55 +1,65 @@
 extern crate ggez;
 extern crate rand;
 
-use ggez::*;
-//use ggez::event::*;
-use ggez::graphics::{DrawMode, Point, Color};
+use ggez::{Context, GameResult};
+use ggez::graphics::{self, DrawMode, Point, Color};
+use ggez::event;
+use ggez::conf::Conf;
 use std::time::Duration;
 
 
 struct MainState {
     pos_x: f32,
     pos_y: f32,
+    font: ggez::graphics::Font,
 }
 
 impl MainState {
-    fn new() -> MainState {
+    fn new(ctx: &mut Context) -> MainState {
+        let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap();
         MainState {
             pos_x: 100.0,
             pos_y: 100.0,
+            font,
         }
     }
-}
 
-fn rgba_float(r_i: u8, g_i: u8, b_i: u8, a_i: f32) -> Color {
+    fn draw_map(&self, rows: i32, ctx: &mut Context) {
+        println!("draw_map: start");
+        graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
+        //let map_width = rows;
+        let min_width = rows - ((rows - 1) / 2);
+        //let mut start = rows;
+        let mut end = min_width;
+        let mut iter = 0;
+        let mut invert = false;
+        loop {
+            if (end < rows) && !invert {
+                self.render_row(end, ctx, iter, min_width, rows, invert);
+                end = end + 1;
+                iter = iter + 1;
+            };
+            if end == rows {
+                self.render_row(end, ctx, iter, min_width, rows, invert);
+                invert = true;
+                end = end - 1;
+                iter = iter + 1;
+            };
+            if invert && (min_width != end) {
+                self.render_row(end, ctx, iter, min_width, rows, invert);
+                end = end - 1;
+                iter = iter + 1;
+            };
+            if min_width == end {
+                self.render_row(end, ctx, iter, min_width, rows, invert);
+                // iter = iter + 1;
+                break;
+            };
+        }
+        println!("draw_map: end");
+    }
 
-    fn to_float(color: u8) -> f32 {
-        (color as f32) / 255.0
-    };
-
-    let result = Color {
-        r: to_float(r_i),
-        g: to_float(g_i),
-        b: to_float(b_i),
-        a: a_i,
-    };
-    // println!("u8 rgba ({},{},{},{})", r_i, g_i, b_i, a_i);
-    // println!("f32 rgba ({},{},{},{})", result.r, result.g, result.b, result.a);
-    return result;
-}
-
-
-fn map_creator(rows: i32, ctx: &mut Context) {
-    println!("map_creator is start");
-    graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
-    //let map_width = rows;
-    let min_width = rows - ((rows - 1) / 2);
-    //let mut start = rows;
-    let mut end = min_width;
-    let mut iter = 0;
-    fn render_row(end: i32, ctx: &mut Context, iter: i32, min_width: i32, rows: i32, invert: bool) {
-
-        let font = graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap();
+    fn render_row(&self, end: i32, ctx: &mut Context, iter: i32, min_width: i32, rows: i32, invert: bool) {
         let w = 136;
         let h = 68;
         let padding_left = 2;
@@ -66,7 +76,7 @@ fn map_creator(rows: i32, ctx: &mut Context) {
                 znak = -1;
             }
 
-            let mut x_str: i32 = 0;
+            let x_str: i32;
 
             if invert == false {
                 x_str = i - (end - min_width);
@@ -74,9 +84,12 @@ fn map_creator(rows: i32, ctx: &mut Context) {
                 x_str = i - (rows - min_width);
             }
             let y_str = (rows - end) * znak;
-            let mut xy_str = format!("{},{}", x_str, y_str);
-            let score_text = graphics::Text::new(ctx, "score", &font).unwrap();
-            let xy_text = graphics::Text::new(ctx, &xy_str, &font).unwrap();
+            let xy_str = format!("{},{}", x_str, y_str);
+
+            // TODO: memleak!
+            // let score_text = graphics::Text::new(ctx, "score", &self.font).unwrap();
+            let xy_text = graphics::Text::new(ctx, &xy_str, &self.font).unwrap();
+
             let score_dest = graphics::Point::new(x as f32, y as f32);
             graphics::draw(ctx, &xy_text, score_dest, 0.0).unwrap();
             let rect = graphics::Rect::new(x as f32, y as f32, w as f32, h as f32);
@@ -144,35 +157,24 @@ fn map_creator(rows: i32, ctx: &mut Context) {
             // ).unwrap();
         }
     }
-    let mut invert: bool = false;
-    loop {
-        if (end < rows) && !invert {
-            render_row(end, ctx, iter, min_width, rows, invert);
-            end = end + 1;
-            iter = iter + 1;
-        };
-        if end == rows {
-            render_row(end, ctx, iter, min_width, rows, invert);
-            invert = true;
-            end = end - 1;
-            iter = iter + 1;
-        };
-        if invert && (min_width != end) {
-            render_row(end, ctx, iter, min_width, rows, invert);
-            end = end - 1;
-            iter = iter + 1;
-        };
-        if min_width == end {
-            render_row(end, ctx, iter, min_width, rows, invert);
-            // iter = iter + 1;
-            break;
-        };
-
-    }
-
-    println!("map_creator is end");
 }
 
+fn rgba_float(r_i: u8, g_i: u8, b_i: u8, a_i: f32) -> Color {
+
+    fn to_float(color: u8) -> f32 {
+        (color as f32) / 255.0
+    };
+
+    let result = Color {
+        r: to_float(r_i),
+        g: to_float(g_i),
+        b: to_float(b_i),
+        a: a_i,
+    };
+    // println!("u8 rgba ({},{},{},{})", r_i, g_i, b_i, a_i);
+    // println!("f32 rgba ({},{},{},{})", result.r, result.g, result.b, result.a);
+    return result;
+}
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context, _dt: Duration) -> GameResult<()> {
@@ -203,7 +205,7 @@ impl event::EventHandler for MainState {
 
 
 
-        map_creator(7, ctx);
+        self.draw_map(7, ctx);
         graphics::present(ctx);
         Ok(())
     }
@@ -280,22 +282,21 @@ impl event::EventHandler for MainState {
         } else {
             println!("Focus lost");
         }
-    }*/
+    }
+    */
 }
 
 fn main() {
-    println!("Hunter is start");
-
-    let mut c = conf::Conf::new();
-    c.window_title = "Hunter!".to_string();
-    c.window_width = 1024;
-    c.window_height = 800;
-    //c.resizable = true;
-    c.window_icon = "/player.png".to_string();
-
-    let ctx = &mut Context::load_from_conf("astroblasto", "ggez", c).unwrap();
-    let state = &mut MainState::new();
-
-    event::run(ctx, state).unwrap();
-
+    println!("Hunter: start");
+    let c = Conf {
+        window_title: "Hunter!".to_string(),
+        window_width: 1024,
+        window_height: 800,
+        // resizable: true,
+        window_icon: "/player.png".to_string(),
+        ..Conf::new()
+    };
+    let mut ctx = &mut Context::load_from_conf("hunter", "speaker73", c).unwrap();
+    let mut state = MainState::new(&mut ctx);
+    event::run(ctx,&mut  state).unwrap();
 }
