@@ -20,7 +20,7 @@ pub struct MainState {
     pub texts: HashMap<(i32, i32), graphics::Text>,
     pub rabbit: graphics::Image,
     pub rabbits_calc:i32,
-    pub rabbits_hash:HashMap<(i32, i32), Point>,
+    pub rabbits_hash:HashMap<(i32, i32), Rabbit>,
     pub map_hash: HashMap<(i32, i32), Point>,
 }
 
@@ -35,7 +35,7 @@ impl MainState {
             font: graphics::Font::new(ctx, "/DejaVuSerif.ttf", 18).unwrap(),
             texts: HashMap::new(),
             rabbit: graphics::Image::new(ctx, "/rabbit.png").unwrap(),
-            rabbits_calc: 5,
+            rabbits_calc: 5000,
             rabbits_hash: HashMap::new(),
             map_hash: HashMap::new(),
         }
@@ -53,26 +53,31 @@ impl event::EventHandler for MainState {
 
         graphics::set_background_color(ctx, rgba_float(255, 130, 20, 1.0));
         graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
-        map_creator(7, ctx, self);
+        map_creator(9, ctx, self);
         
         draw_rabbits(ctx, self);
-
+        rabbits_run(self);
         graphics::present(ctx);
 
         Ok(())
     }
     fn key_down_event(&mut self, keycode: Keycode, _keymod: Mod, _repeat: bool) {
        //println!("key_down: {}", keycode);
+       if Keycode::R == keycode{
+            println!("key_up: {}", keycode);
+            //rabbits_run(self);
+            //self.rabbits_calc +=50;
+        }
     }
 
 
     fn key_up_event(&mut self, keycode: Keycode, _keymod: Mod, _repeat: bool) {
         
-        if Keycode::R == keycode{
+       /* if Keycode::R == keycode{
             println!("key_up: {}", keycode);
             rabbits_run(self);
             //self.rabbits_calc +=50;
-        }
+        }*/
     }
 }
 
@@ -81,12 +86,12 @@ fn main() {
 
     let mut c = conf::Conf::new();
     c.window_title = "Hunter!".to_string();
-    c.window_width = 1024;
-    c.window_height = 800;
+    c.window_width = 1680;
+    c.window_height = 960;
 
-    //c.resizable = true;
+    c.resizable = true;
     c.window_icon = "/player.png".to_string();
-    let ctx = &mut Context::load_from_conf("astroblasto", "ggez", c).unwrap();
+    let ctx = &mut Context::load_from_conf("Hunter", "ggez", c).unwrap();
     let state = &mut MainState::new(ctx);
     event::run(ctx, state).unwrap();
 

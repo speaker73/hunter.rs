@@ -2,7 +2,7 @@ extern crate ggez;
 use ggez::*;
 use ggez::graphics::{DrawMode, Point, Color};
 use ::MainState;
-
+use movemant::{Rabbit};
 pub struct Txt {
     pub text_string: String,
     pub x: f32,
@@ -103,14 +103,14 @@ pub fn draw_rabbits(ctx: &mut Context, tself: &mut MainState){
         if tself.rabbits_calc > 0{
              let cor = *obj.1;
              let hex_cor = obj.0;
-             tself.rabbits_hash.insert( ( hex_cor.0, hex_cor.1 ), cor);
+             tself.rabbits_hash.insert( ( hex_cor.0, hex_cor.1 ), Rabbit{x:hex_cor.0, y:hex_cor.1, point:cor} );
              render_rabbit(cor, ctx, tself);
              tself.rabbits_calc -= 1;
         }       
      }        
     }else{
-        for obj in tself.rabbits_hash.iter(){
-            let cor = *obj.1;
+        for rabbit in tself.rabbits_hash.values(){
+            let cor = rabbit.point;
             render_rabbit(cor, ctx, tself);
         }
     }

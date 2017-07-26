@@ -66,15 +66,18 @@ fn create_row(
         let h = 68;
         let padding_left = 2;
         let padding_top = -2;
+        let margin_left = (min_width as f32 * 0.5 * w as f32) + ( (ctx.conf.window_width as f32) - (rows as f32 * w as f32) )* 0.5;
+        let map_height = ( ( (rows * h) as f32) * 1.3) as i32;
+        let margin_top = ( (ctx.conf.window_height as i32) - map_height ) / 2 ;
+       // println!("maprgin_left=>{}, window_width=>{}", margin_left, ctx.conf.window_width);
         for i in 0..end {
 
-            let mut x = 310 - ((end - min_width) * 4) + (i * (w + padding_left)) -
-                ((end - min_width) * (w / 2));
-            let y = 110 + (iter * (h + h / 2 + padding_top));
+            let mut x = margin_left as i32 - ((end - min_width) * 4) + (i * (w + padding_left)) - ((end - min_width) * (w / 2));
+            let y = margin_top + (iter * (h + h / 2 + padding_top));
 
             let mut znak: i32 = 1;
             if invert == false {
-                x = 310 - (iter * 4) + (i * (w + padding_left)) - ((end - min_width) * (w / 2));
+                x = margin_left as i32 - (iter * 4) + (i * (w + padding_left)) - ((end - min_width) * (w / 2));
                 znak = -1;
             }
             let x_str =  if invert {i - (end - min_width) } else {i - (rows - min_width) };
