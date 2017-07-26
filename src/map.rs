@@ -1,6 +1,6 @@
-use draw::{Txt, draw_text, Hex, draw_hex, rgba_float};
+use draw::{Hex, draw_hex, rgba_float};
 use ggez::*;
-use ggez::graphics::{DrawMode, Point, Color, Drawable};
+use ggez::graphics::{Point ,};
 use ::MainState;
 
 
@@ -39,7 +39,7 @@ pub fn map_creator(rows: i32, ctx: &mut Context, tself: &mut MainState) {
         };
         if min_width == end {
             create_row(end, ctx, iter, min_width, rows, invert, tself, il);
-            iter += 1;
+            //iter += 1;
             break;
         };
 
@@ -77,14 +77,7 @@ fn create_row(
                 x = 310 - (iter * 4) + (i * (w + padding_left)) - ((end - min_width) * (w / 2));
                 znak = -1;
             }
-
-            let mut x_str: i32 = 0;
-
-            if invert == false {
-                x_str = i - (end - min_width);
-            } else {
-                x_str = i - (rows - min_width);
-            }
+            let x_str =  if invert {i - (end - min_width) } else {i - (rows - min_width) };
             let y_str = (rows - end) * znak;
             let hex_cor = HexCord{
             	x: x_str,
@@ -95,18 +88,9 @@ fn create_row(
             	//println!("il {}", il);
             	let texts = tself.texts.get( &(hex_cor.x, hex_cor.y) ).unwrap();
             	let cord = graphics::Point::new(x as f32, y as f32);
-    			graphics::draw(ctx, texts, cord, 0.0).unwrap();
+    			graphics::draw(ctx, texts, cord, 0.0).unwrap();           
             }
-            /*draw_text(
-                Txt {
-                    textString: xy_str,
-                    x: x as f32,
-                    y: y as f32,
-                },
-                &tself.font,
-                ctx,
-            );*/
-            
+     
             
             draw_hex(
                 Hex{
@@ -117,9 +101,13 @@ fn create_row(
                 }, 
                 ctx
             );
+            
+            //render_rabbit(Point{x: x as f32, y: y as f32}, ctx, tself);
+           
             if tself.iteration != -1 {
 				let text_glif = graphics::Text::new(ctx, &xy_str, &tself.font).unwrap();
             	tself.texts.insert( ( hex_cor.x, hex_cor.y ), text_glif);
+                tself.map_hash.insert( (hex_cor.x, hex_cor.y), Point{x: x as f32, y: y as f32} );
             	tself.iteration += 1;
             	il += 1;            	
             }else{

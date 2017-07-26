@@ -1,8 +1,10 @@
 extern crate ggez;
 use ggez::*;
 use ggez::graphics::{DrawMode, Point, Color};
+use ::MainState;
+
 pub struct Txt {
-    pub textString: String,
+    pub text_string: String,
     pub x: f32,
     pub y: f32,
 }
@@ -14,7 +16,7 @@ pub struct Hex {
 }
 
 pub fn draw_text(txt: Txt, font: &graphics::Font, ctx: &mut Context) {
-    let text = graphics::Text::new(ctx, &txt.textString, &font).unwrap();
+    let text = graphics::Text::new(ctx, &txt.text_string, &font).unwrap();
     let cord = graphics::Point::new(txt.x as f32, txt.y as f32);
     graphics::draw(ctx, &text, cord, 0.0).unwrap();
 }
@@ -83,3 +85,34 @@ pub fn rgba_float(r_i: u8, g_i: u8, b_i: u8, a_i: f32) -> Color {
     result
 }
 
+pub fn render_rabbit(point:Point, ctx: &mut Context, tself: &MainState){
+     graphics::draw_ex(ctx,
+                       &tself.rabbit,
+                       graphics::DrawParam {
+                             dest:point,
+                             scale: Point{x:0.3, y:0.3},
+                            ..Default::default()
+                             
+                       }).unwrap();
+}
+
+pub fn draw_rabbits(ctx: &mut Context, tself: &mut MainState){
+    let map =  tself.map_hash.iter();
+    if tself.rabbits_calc > 0 {
+     for obj in map{
+        if tself.rabbits_calc > 0{
+             let cor = *obj.1;
+             let hex_cor = obj.0;
+             tself.rabbits_hash.insert( ( hex_cor.0, hex_cor.1 ), cor);
+             render_rabbit(cor, ctx, tself);
+             tself.rabbits_calc -= 1;
+        }       
+     }        
+    }else{
+        for obj in tself.rabbits_hash.iter(){
+            let cor = *obj.1;
+            render_rabbit(cor, ctx, tself);
+        }
+    }
+                 
+}
