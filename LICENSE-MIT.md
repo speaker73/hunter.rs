@@ -1,6 +1,6 @@
 MIT/X Consortium License
 
-@ 2016-2017 Vladyslav Melnychuk <73jtag@gmail.com>
+@ 2017 Vladyslav Melnychuk <73jtag@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
