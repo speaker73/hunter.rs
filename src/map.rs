@@ -124,7 +124,7 @@ fn is_hex_clicked(hex:HexCord, tself:& MainState, ctx: &mut Context){
     let vec_length = tself.is_click.len();
     for i in 0..vec_length {
             if (tself.is_click[i as usize].0 == hex.x) && (tself.is_click[i as usize].1 == hex.y ){
-               graphics::set_color(ctx, rgba_float(255, 255, 255, 1.0)).unwrap();
+               graphics::set_color(ctx, rgba_float(45, 1, 1, 0.55)).unwrap();
             }
     }
 }
