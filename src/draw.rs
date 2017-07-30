@@ -3,6 +3,7 @@ use ggez::*;
 use ggez::graphics::{DrawMode, Point, Color};
 use ::MainState;
 use movemant::{Rabbit};
+
 pub struct Txt {
     pub text_string: String,
     pub x: f32,
@@ -22,7 +23,9 @@ pub fn draw_text(txt: Txt, font: &graphics::Font, ctx: &mut Context) {
 }
 
 pub fn draw_hex(hex: Hex, ctx: &mut Context){
-	let rect = graphics::Rect::new(hex.x as f32, hex.y as f32, hex.w as f32, hex.h as f32);
+			// graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
+			let rect = graphics::Rect::new(hex.x as f32, hex.y as f32, hex.w as f32, hex.h as f32);
+			
             graphics::polygon(
                 ctx,
                 DrawMode::Fill,
@@ -103,16 +106,19 @@ pub fn draw_rabbits(ctx: &mut Context, tself: &mut MainState){
         if tself.rabbits_calc > 0{
              let cor = *obj.1;
              let hex_cor = obj.0;
-             tself.rabbits_hash.insert( ( hex_cor.0, hex_cor.1 ), Rabbit{x:hex_cor.0, y:hex_cor.1, point:cor} );
+             tself.rabbits_hash.insert( ( hex_cor.0, hex_cor.1,  tself.rabbits_calc), Rabbit{x:hex_cor.0, y:hex_cor.1, point:cor} );
              render_rabbit(cor, ctx, tself);
              tself.rabbits_calc -= 1;
         }       
      }        
     }else{
+    	//let mut calc = 0;
         for rabbit in tself.rabbits_hash.values(){
+        	//calc+=1;
             let cor = rabbit.point;
             render_rabbit(cor, ctx, tself);
         }
+       // println!("rabbit in hash {}", calc);
     }
                  
 }

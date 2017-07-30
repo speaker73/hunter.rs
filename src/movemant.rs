@@ -21,7 +21,7 @@ pub fn rabbits_run (tself:&mut MainState){
 		    Some(n) => *n,
 		    None => Point{x:150.0,y:150.0},
 		};
-		println!("Rabbit_{}{} go {}, prev:{},{}; next:{},{}",(obj.0).0,(obj.0).1, rab.1, cor_prev.x, cor_prev.y, cor_next.x, cor_next.y);
+		//println!("Rabbit({},{},{}) go {}, prev:{},{}; next:{},{}",(obj.0).0,(obj.0).1,(obj.0).2, rab.1, cor_prev.x, cor_prev.y, cor_next.x, cor_next.y);
 		//println!("next:{},{}", cor_next.x, cor_next.y);
 		//println!("next point:{},{}", &next_point.x, &next_point.y);
 
@@ -29,7 +29,7 @@ pub fn rabbits_run (tself:&mut MainState){
 	};
 	for rabbit in next_rabbits{
 		tself.rabbits_hash.remove( &rabbit.0 );
-		tself.rabbits_hash.insert( ((rabbit.0).0, (rabbit.0).1) , rabbit.1 );
+		tself.rabbits_hash.insert( ((rabbit.0).0, (rabbit.0).1, (rabbit.0).2), rabbit.1 );
 	}
 }
 pub fn rabbit_run (cor_prev:& Rabbit)-> (Rabbit, &str){

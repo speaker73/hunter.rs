@@ -1,9 +1,9 @@
 use draw::{Hex, draw_hex, rgba_float};
 use ggez::*;
-use ggez::graphics::{Point ,};
+use ggez::graphics::{Point};
 use ::MainState;
 
-
+#[derive(Debug,Clone)]
 pub struct HexCord {
     pub x:i32,
     pub y:i32,
@@ -62,8 +62,8 @@ fn create_row(
         tself: &mut MainState,
         mut il: i32,
     ) {
-        let w = 136;
-        let h = 68;
+        let w = tself.w;
+        let h = tself.h;
         let padding_left = 2;
         let padding_top = -2;
         let margin_left = (min_width as f32 * 0.5 * w as f32) + ( (ctx.conf.window_width as f32) - (rows as f32 * w as f32) )* 0.5;
@@ -91,10 +91,11 @@ fn create_row(
             	//println!("il {}", il);
             	let texts = tself.texts.get( &(hex_cor.x, hex_cor.y) ).unwrap();
             	let cord = graphics::Point::new(x as f32, y as f32);
-    			graphics::draw(ctx, texts, cord, 0.0).unwrap();           
+    			graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
+                graphics::draw(ctx, texts, cord, 0.0).unwrap();           
             }
-     
-            
+            graphics::set_color(ctx, rgba_float(45, 1, 1, 0.35)).unwrap();
+            is_hex_clicked(hex_cor.clone(), tself, ctx);
             draw_hex(
                 Hex{
                     x: x as f32,
@@ -119,3 +120,11 @@ fn create_row(
             
         }
     }
+fn is_hex_clicked(hex:HexCord, tself:& MainState, ctx: &mut Context){
+    let vec_length = tself.is_click.len();
+    for i in 0..vec_length {
+            if (tself.is_click[i as usize].0 == hex.x) && (tself.is_click[i as usize].1 == hex.y ){
+               graphics::set_color(ctx, rgba_float(255, 255, 255, 1.0)).unwrap();
+            }
+    }
+}
