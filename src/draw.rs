@@ -2,6 +2,7 @@ extern crate ggez;
 use ggez::*;
 use ggez::graphics::{DrawMode, Point, Color};
 use ::MainState;
+use ::Hunter;
 use movemant::{Rabbit};
 
 pub struct Txt {
@@ -121,4 +122,23 @@ pub fn draw_rabbits(ctx: &mut Context, tself: &mut MainState){
        // println!("rabbit in hash {}", calc);
     }
                  
+}
+pub fn draw_hunter(ctx: &mut Context, tself: &mut MainState){
+   let hunter_point = match tself.map_hash.get( &(0,0) ) {
+            Some(n) => *n,
+            None => Point{x:150.0,y:350.0},
+        };
+    println!("{:?}", &hunter_point);
+   render_hunter( hunter_point, ctx, tself);
+}
+pub fn render_hunter(point:Point, ctx: &mut Context, tself: &MainState){
+     graphics::set_color(ctx, rgba_float(255, 255, 255, 1.0)).unwrap();
+     graphics::draw_ex(ctx,
+                       &tself.hunter.view,
+                       graphics::DrawParam {
+                             dest:Point{x:(point.x + 50.0), y:(point.y - 20.0)},
+                             scale: Point{x:1.0, y:1.0},
+                            ..Default::default()
+                             
+                       }).unwrap();
 }

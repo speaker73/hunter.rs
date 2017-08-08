@@ -4,7 +4,8 @@ version = "0.1.0"
 authors = ["Vlad <speaker73.mieln@gmail.com>"]
 
 readme = "README.md"
-license = "license = "MIT OR Apache-2.0"
+license = "MIT OR Apache-2.0"
+
 [dependencies]
 ggez = "0.3.0"
 rand = "0.3"
